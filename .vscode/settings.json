@@ -1,0 +1,11 @@
+{
+    "files.exclude": {
+      "**/__pycache__": true,
+      ".pytest_cache": true,
+      "**/*.egg-info": true
+    },
+    "terminal.integrated.fontFamily": "Cascadia Code PL",
+    "python.pythonPath": ".venv/Scripts/python.exe",
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic"
+  }
