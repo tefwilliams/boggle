@@ -5,3 +5,12 @@
 3. (Optional) Setup python3 virtual environment: `python -m venv c:\path\to\myenv`
 4. Install required packages: `pip install -r requirements.txt`
 5. Run `main.py`
+
+To install the enchant library:
+
+```
+brew update
+brew install enchant
+```
+
+Needs to use a python installed via homebrew
