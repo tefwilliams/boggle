@@ -1,19 +1,19 @@
-from coordinate import Coordinate
+from vector import Vector
 from words import dictionary
 
 surrounding_letters = [
-    Coordinate(-1, 0),
-    Coordinate(-1, 1),
-    Coordinate(0, 1),
-    Coordinate(1, 1),
-    Coordinate(1, 0),
-    Coordinate(1, -1),
-    Coordinate(0, -1),
-    Coordinate(-1, -1),
+    Vector(-1, 0),
+    Vector(-1, 1),
+    Vector(0, 1),
+    Vector(1, 1),
+    Vector(1, 0),
+    Vector(1, -1),
+    Vector(0, -1),
+    Vector(-1, -1),
 ]
 
 
-def get_words(grid, current_letter: Coordinate, previously_visited: list[Coordinate] = []):
+def get_words(grid, current_letter: Vector, previously_visited: list[Vector] = []):
     current_word = "".join(grid[*coord]
                            for coord in previously_visited) + grid[*current_letter]
 
@@ -45,7 +45,7 @@ def get_words(grid, current_letter: Coordinate, previously_visited: list[Coordin
     return valid_words
 
 
-def within_grid(coord: Coordinate, grid_shape: tuple[int, int]):
+def within_grid(coord: Vector, grid_shape: tuple[int, int]):
     return (
         coord.row >= 0 and
         coord.col >= 0 and
