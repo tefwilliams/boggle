@@ -1,18 +1,19 @@
+from coordinate import Coordinate
 from words import dictionary
 
-surrounding_letters: list[tuple[int, int]] = [
-    (-1, 0),
-    (-1, 1),
-    (0, 1),
-    (1, 1),
-    (1, 0),
-    (1, -1),
-    (0, -1),
-    (-1, -1),
+surrounding_letters = [
+    Coordinate(-1, 0),
+    Coordinate(-1, 1),
+    Coordinate(0, 1),
+    Coordinate(1, 1),
+    Coordinate(1, 0),
+    Coordinate(1, -1),
+    Coordinate(0, -1),
+    Coordinate(-1, -1),
 ]
 
 
-def get_words(grid, current_letter: tuple[int, int], previously_visited: list[tuple[int, int]] = []):
+def get_words(grid, current_letter: Coordinate, previously_visited: list[Coordinate] = []):
     current_word = "".join(grid[*coord]
                            for coord in previously_visited) + grid[*current_letter]
 
@@ -23,8 +24,8 @@ def get_words(grid, current_letter: tuple[int, int], previously_visited: list[tu
         return valid_words
 
     # Get adjacent squares for any square
-    next_letters: list[tuple[int, int]] = [
-        [letter[0] + current_letter[0], letter[1] + current_letter[1]]
+    next_letters = [
+        letter + current_letter
         for letter in surrounding_letters
     ]
 
@@ -44,10 +45,10 @@ def get_words(grid, current_letter: tuple[int, int], previously_visited: list[tu
     return valid_words
 
 
-def within_grid(coord: tuple[int, int], grid_shape: tuple[int, int]):
+def within_grid(coord: Coordinate, grid_shape: tuple[int, int]):
     return (
-        coord[0] >= 0 and
-        coord[1] >= 0 and
-        coord[0] < grid_shape[0] and
-        coord[1] < grid_shape[1]
+        coord.row >= 0 and
+        coord.col >= 0 and
+        coord.row < grid_shape[0] and
+        coord.col < grid_shape[1]
     )
