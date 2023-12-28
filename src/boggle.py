@@ -1,5 +1,5 @@
 from vector import Vector
-from words import dictionary
+from dictionary import is_valid_word, any_words_begin_with
 
 
 unit_steps = [
@@ -20,7 +20,7 @@ def get_words(grid, current_coord: Vector, previously_visited: list[Vector] = []
     return [
         word
         for coord in (
-            get_next_letters(grid, current_coord, previously_visited)
+            get_adjacent_squares(grid, current_coord, previously_visited)
             # Exit early if no words begin with current string
             if any_words_begin_with(current_string)
             else []
@@ -36,18 +36,20 @@ def get_string(grid, coords: list[Vector]) -> str:
     )
 
 
-def is_valid_word(word: str):
-    return dictionary.check(word) and len(word) >= 3
+def get_adjacent_squares(grid, current_square: Vector, previously_visited: list[Vector]):
+    '''
+    Gets the coordinates of all squares surrounding the current square.
+    Excludes those that are outside of the grid (i.e. if the current square is at an edge)
+    and any squares that have previously been visited.
 
+    Parameters:
+        grid: The grid of squares.
+        current_square (Vector): The coordinates of the current square.
+        previously_visited (list[Vector]): The coordinates of all squares that have previously been visited.
 
-def any_words_begin_with(string: str):
-    return any(
-        word.startswith(string)
-        for word in dictionary.suggest(string)
-    )
-
-
-def get_next_letters(grid, current_square: Vector, previously_visited: list[Vector]):
+    Returns:
+        adjacent_squares (list[Vector]): The list of unvisted adjacent squares.
+    '''
     adjacent_squares = []
     grid_shape = grid.shape
 
@@ -64,6 +66,16 @@ def get_next_letters(grid, current_square: Vector, previously_visited: list[Vect
 
 
 def within_grid(coord: Vector, grid_shape: tuple[int, int]):
+    '''
+    Checks whether the given coordinates are within a grid of the given shape.
+
+    Parameters:
+        coord (Vector): The coordinates.
+        grid_shape (tuple[int, int]): The dimensions of the grid.
+
+    Returns:
+        within_grid (bool): Whether the given coordinates are within a grid of the given shape.
+    '''
     return (
         coord.row >= 0 and
         coord.col >= 0 and
