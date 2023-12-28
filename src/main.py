@@ -9,6 +9,7 @@ for i in range(4):
     for j in range(4):
         words += get_words(grid, Vector(i, j))
 
+words = set(words)
 
 print(grid)
-print(words)
+print(sorted(words))

@@ -1,7 +1,8 @@
 from vector import Vector
 from words import dictionary
 
-surrounding_letters = [
+
+unit_steps = [
     Vector(-1, 0),
     Vector(-1, 1),
     Vector(0, 1),
@@ -13,36 +14,52 @@ surrounding_letters = [
 ]
 
 
-def get_words(grid, current_letter: Vector, previously_visited: list[Vector] = []):
-    current_word = "".join(grid[*coord]
-                           for coord in previously_visited) + grid[*current_letter]
+def get_words(grid, current_square: Vector, previously_visited: list[Vector] = []):
+    current_word = get_current_word(grid, current_square, previously_visited)
+    valid_words = [current_word] if is_valid_word(current_word) else []
 
-    valid_words: list[str] = [
-        current_word] if dictionary.check(current_word) and len(current_word) >= 3 else []
-
-    if not any(word.startswith(current_word) for word in dictionary.suggest(current_word)):
+    if no_words_begin_with(current_word):
         return valid_words
 
-    # Get adjacent squares for any square
-    next_letters = [
-        letter + current_letter
-        for letter in surrounding_letters
-    ]
-
-    grid_shape = grid.shape
-    next_letters = [
-        letter for letter in next_letters
-        if (
-            within_grid(letter, grid_shape) and
-            letter not in previously_visited
-        )
-    ]
-
-    for letter in next_letters:
-        valid_words += get_words(grid, letter,
-                                 previously_visited + [current_letter])
+    for square in get_next_letters(grid, current_square, previously_visited):
+        valid_words += get_words(grid, square,
+                                 previously_visited + [current_square])
 
     return valid_words
+
+
+def get_current_word(grid, current_letter: Vector, previously_visited: list[Vector]) -> str:
+    return "".join(
+        grid[*coord]
+        for coord in previously_visited
+    ) + grid[*current_letter]
+
+
+def is_valid_word(word: str):
+    return dictionary.check(word) and len(word) >= 3
+
+
+def no_words_begin_with(string: str):
+    return not any(
+        word.startswith(string)
+        for word in dictionary.suggest(string)
+    )
+
+
+def get_next_letters(grid, current_square: Vector, previously_visited: list[Vector]):
+    adjacent_squares = []
+    grid_shape = grid.shape
+
+    for step in unit_steps:
+        adjacent_square = step + current_square
+
+        if (
+            within_grid(adjacent_square, grid_shape) and
+            adjacent_square not in previously_visited
+        ):
+            adjacent_squares.append(adjacent_square)
+
+    return adjacent_squares
 
 
 def within_grid(coord: Vector, grid_shape: tuple[int, int]):
