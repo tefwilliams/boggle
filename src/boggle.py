@@ -14,33 +14,34 @@ unit_steps = [
 ]
 
 
-def get_words(grid, current_square: Vector, previously_visited: list[Vector] = []):
-    current_word = get_current_word(grid, current_square, previously_visited)
-    valid_words = [current_word] if is_valid_word(current_word) else []
+def get_words(grid, current_coord: Vector, previously_visited: list[Vector] = []):
+    current_string = get_string(grid, previously_visited + [current_coord])
 
-    if no_words_begin_with(current_word):
-        return valid_words
+    return [
+        word
+        for coord in (
+            get_next_letters(grid, current_coord, previously_visited)
+            # Exit early if no words begin with current string
+            if any_words_begin_with(current_string)
+            else []
+        )
+        for word in get_words(grid, coord, previously_visited + [current_coord])
+    ] + ([current_string] if is_valid_word(current_string) else [])
 
-    for square in get_next_letters(grid, current_square, previously_visited):
-        valid_words += get_words(grid, square,
-                                 previously_visited + [current_square])
 
-    return valid_words
-
-
-def get_current_word(grid, current_letter: Vector, previously_visited: list[Vector]) -> str:
+def get_string(grid, coords: list[Vector]) -> str:
     return "".join(
         grid[*coord]
-        for coord in previously_visited
-    ) + grid[*current_letter]
+        for coord in coords
+    )
 
 
 def is_valid_word(word: str):
     return dictionary.check(word) and len(word) >= 3
 
 
-def no_words_begin_with(string: str):
-    return not any(
+def any_words_begin_with(string: str):
+    return any(
         word.startswith(string)
         for word in dictionary.suggest(string)
     )
