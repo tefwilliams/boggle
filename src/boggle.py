@@ -20,7 +20,7 @@ unit_steps: list[Array2x2Int] = [
 
 class BoggleGrid:
     def __init__(self, grid: Array4x4Str, dictionary: Dictionary) -> None:
-        assert grid.shape == (4, 4)
+        validate_grid(grid)
         self.__grid = grid
         self.__dictionary = dictionary
 
@@ -97,3 +97,19 @@ class BoggleGrid:
             0 <= row_num < num_rows and
             0 <= col_num < num_cols
         )
+
+
+def validate_grid(grid: Array4x4Str):
+    if grid.shape != (4, 4):
+        raise ValueError(f'Grid shape should be (4, 4) - is {grid.shape}')
+
+    invalid_squares = set(
+        square
+        for row in grid
+        for square in row
+        if not square.isalpha()
+    )
+
+    if any(invalid_squares):
+        raise ValueError(
+            f'Invalid value(s) for square: {", ".join(invalid_squares)}')
